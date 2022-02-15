@@ -1,7 +1,7 @@
 from urllib import response
 import requests
 
-BASE="https://foreheadgameapi.netlify.app/"
+BASE="https://forehead-game-backend.herokuapp.com/"
 
 # data = [{"likes": 78, "name":"Best ballads", "views": 123, "created_by": "YoMama", "tags": "music,rock", "cards": 'gg,g,ds,aasd,f'},
 #    {"likes": 73458, "name":"Only the best", "views": 55, "created_by": "tototmek", "tags": "music", "cards": 'gg,g,ds,aasd,f'},
