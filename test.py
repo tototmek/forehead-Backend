@@ -1,6 +1,7 @@
+from urllib import response
 import requests
 
-BASE="http://127.0.0.1:5000/"
+BASE="https://foreheadgameapi.netlify.app/"
 
 # data = [{"likes": 78, "name":"Best ballads", "views": 123, "created_by": "YoMama", "tags": "music,rock", "cards": 'gg,g,ds,aasd,f'},
 #    {"likes": 73458, "name":"Only the best", "views": 55, "created_by": "tototmek", "tags": "music", "cards": 'gg,g,ds,aasd,f'},
@@ -17,7 +18,10 @@ BASE="http://127.0.0.1:5000/"
 # requests.put(BASE + "user/tototmek")
 
 
-search_data = {"name":"rock"}
-response = requests.get(BASE + "search", search_data)
+#search_data = {"name":"rock"}
+#response = requests.get(BASE + "search", search_data)
+#print(response.json())
+#print(len(response.json()))
+
+response = requests.get(BASE + "game/1")
 print(response.json())
-print(len(response.json()))
