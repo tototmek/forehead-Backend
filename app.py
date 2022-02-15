@@ -163,6 +163,5 @@ class SearchGame(Resource):
 
 api.add_resource(SearchGame, "/search")
 
-
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run()
