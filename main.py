@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
-import pickle
 
 app = Flask(__name__)
 api = Api(app)
@@ -106,6 +105,7 @@ api.add_resource(Game, "/game/<int:game_id>")
 
 class UserModel(db.Model):
 	name = db.Column(db.String(100), primary_key=True, nullable=False)
+	password = db.Column(db.String(100), nullable=False)
 
 	def __repr__(self):
 		return f"User(name = {self.name})"
@@ -122,21 +122,37 @@ class User(Resource):
 			abort(404, message="Could not find a user with that name")
 		return result
 
+login_args = reqparse.RequestParser()
+login_args.add_argument("username", type=str, required=True)
+login_args.add_argument("password", type=str, required=True)
+
+class Login(Resource):
+	def get(self):
+		args = login_args.parse_args()
+		result = UserModel.query.filter_by(name=args["username"]).first()
+		if result.password == args["password"]:
+			return True
+		else:
+			return False
+	
 	@marshal_with(user_fields)
-	def put(self, user_name):
-		result = UserModel.query.filter_by(name=user_name).first()
+	def put(self):
+		args = login_args.parse_args()
+		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result:
 			abort(409, message="Name already taken...")
 
 		user = UserModel(
-            name=user_name)
+            name=args["username"],
+			password=args["password"])
 		db.session.add(user)
 		db.session.commit()
 		return user, 201
 
+
 api.add_resource(User, "/user/<string:user_name>")
 
-
+api.add_resource(Login, "/login")
 
 search_args = reqparse.RequestParser()
 search_args.add_argument("name", type=str)
