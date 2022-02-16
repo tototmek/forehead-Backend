@@ -30,21 +30,21 @@ class GameModel(db.Model):
 			"likes": self.likes
 		}
 
-game_put_args = reqparse.RequestParser()
-game_put_args.add_argument("name", type=str, help="Name of the game is required", required=True)
-game_put_args.add_argument("tags", type=str, help="Tags are required", required=True)
-game_put_args.add_argument("created_by", type=str, help="Creator of the game", required=True)
-game_put_args.add_argument("cards", type=str, help="Cards are required", required=True)
-game_put_args.add_argument("views", type=int, help="Views of the game", required=True)
-game_put_args.add_argument("likes", type=int, help="Likes on the game", required=True)
+game_post_args = reqparse.RequestParser()
+game_post_args.add_argument("name", type=str, help="Name of the game is required", required=True)
+game_post_args.add_argument("tags", type=str, help="Tags are required", required=True)
+game_post_args.add_argument("created_by", type=str, help="Creator of the game", required=True)
+game_post_args.add_argument("cards", type=str, help="Cards are required", required=True)
+game_post_args.add_argument("views", type=int, help="Views of the game", required=True)
+game_post_args.add_argument("likes", type=int, help="Likes on the game", required=True)
 
 game_update_args = reqparse.RequestParser()
-game_put_args.add_argument("name", type=str, help="Name of the game is required")
-game_put_args.add_argument("tags", type=str, help="Tags are required")
-game_put_args.add_argument("created_by", type=str, help="Creator of the game")
-game_put_args.add_argument("cards", type=str, help="Cards are required")
-game_put_args.add_argument("views", type=int, help="Views of the game")
-game_put_args.add_argument("likes", type=int, help="Likes on the game")
+game_update_args.add_argument("name", type=str, help="Name of the game is required")
+game_update_args.add_argument("tags", type=str, help="Tags are required")
+game_update_args.add_argument("created_by", type=str, help="Creator of the game")
+game_update_args.add_argument("cards", type=str, help="Cards are required")
+game_update_args.add_argument("views", type=int, help="Views of the game")
+game_update_args.add_argument("likes", type=int, help="Likes on the game")
 
 game_fields = {
 	'id': fields.Integer,
@@ -65,8 +65,8 @@ class Game(Resource):
 		return result
 
 	@marshal_with(game_fields)
-	def put(self, game_id):
-		args = game_put_args.parse_args()
+	def post(self, game_id):
+		args = game_post_args.parse_args()
 		game = GameModel(
             name=args['name'],
             tags=args['tags'],
@@ -136,7 +136,7 @@ class Login(Resource):
 			return False
 	
 	@marshal_with(user_fields)
-	def put(self):
+	def post(self):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result:
