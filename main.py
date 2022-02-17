@@ -9,9 +9,9 @@ db = SQLAlchemy(app)
 
 class GameModel(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	name = db.Column(db.String(100), nullable=False)
+	name = db.Column(db.String(200), nullable=False)
 	tags = db.Column(db.String, nullable=False)
-	created_by = db.Column(db.String(100), nullable=False)
+	created_by = db.Column(db.String(25), nullable=False)
 	cards = db.Column(db.String, nullable=False)
 	views = db.Column(db.Integer, nullable=False)
 	likes = db.Column(db.Integer, nullable=False)
@@ -104,7 +104,7 @@ class Game(Resource):
 api.add_resource(Game, "/game/<int:game_id>")
 
 class UserModel(db.Model):
-	name = db.Column(db.String(100), primary_key=True, nullable=False)
+	name = db.Column(db.String(25), primary_key=True, nullable=False)
 	password = db.Column(db.String(100), nullable=False)
 
 	def __repr__(self):
@@ -140,7 +140,7 @@ class Login(Resource):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result:
-			abort(409, message="Name already taken...")
+			abort(200, message="Name already taken...")
 
 		user = UserModel(
             name=args["username"],
