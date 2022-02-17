@@ -128,8 +128,8 @@ class User(Resource):
 		return result
 
 login_args = reqparse.RequestParser()
-login_args.add_argument("username", type=str, required=True, help="Username is required")
 login_args.add_argument("password", type=str, required=True, help="Password is required")
+login_args.add_argument("username", type=str, required=True, help="Username is required")
 
 class Login(Resource):
 	def get(self):

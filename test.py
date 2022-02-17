@@ -21,7 +21,7 @@ BASE = "http://127.0.0.1:5000/"
 #print(response.json())
 
 # LOGIN
-response = requests.get(BASE + "login", {"username":"asd", "password":"karlos21_37"})
+response = requests.get(BASE + "login", {"username":"hulia", "password":"karlos21_37"})
 print(response.json())
 
 # CHECK IF USER EXISTS
