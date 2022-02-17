@@ -136,7 +136,7 @@ class Login(Resource):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result is None:
-			return {"message":"No user with such name!"}, 400
+			return {"message":'No user with such name.', "name": args["name"]}, 400
 		if result.password == args["password"]:
 			return result.jsonify(), 200
 		else:
