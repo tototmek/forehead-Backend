@@ -128,17 +128,19 @@ class User(Resource):
 		return result
 
 login_args = reqparse.RequestParser()
-login_args.add_argument("username", type=str, required=True)
-login_args.add_argument("password", type=str, required=True)
+login_args.add_argument("username", type=str, required=True, help="Username is required")
+login_args.add_argument("password", type=str, required=True, help="Password is required")
 
 class Login(Resource):
 	def get(self):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
+		if result is None:
+			return {"message":"No user with such name!"}, 400
 		if result.password == args["password"]:
-			return True
+			return result.jsonify(), 200
 		else:
-			return False
+			return {"message":"Wrong password!"}, 401
 	
 	def post(self):
 		args = login_args.parse_args()

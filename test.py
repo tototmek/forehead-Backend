@@ -17,12 +17,12 @@ BASE = "http://127.0.0.1:5000/"
 #     requests.put(BASE + "game/1", data[i])
 
 # REGISTER USER
-response = requests.post(BASE + "login", {"username":"karlositos231", "password":"karlos21_37"})
-print(response.json())
+#response = requests.post(BASE + "login", {"username":"karlositos231", "password":"karlos21_37"})
+#print(response.json())
 
 # LOGIN
-#response = requests.get(BASE + "login", {"username":"karlos", "password":"kalfros21_37"})
-#print(response.json())
+response = requests.get(BASE + "login", {"username":"karlositos231", "password":"karlos2dfdf1_37"})
+print(response.json())
 
 # CHECK IF USER EXISTS
 #response = requests.get(BASE + "user/hulia")
