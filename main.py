@@ -132,7 +132,7 @@ login_args.add_argument("password", type=str, required=True, help="Password is r
 login_args.add_argument("username", type=str, required=True, help="Username is required")
 
 class Login(Resource):
-	def get(self):
+	def post(self):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result is None:
@@ -141,7 +141,8 @@ class Login(Resource):
 			return result.jsonify(), 200
 		else:
 			return {"message":"Wrong password!"}, 401
-	
+
+class Signup(Resource):
 	def post(self):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
@@ -155,10 +156,10 @@ class Login(Resource):
 		db.session.commit()
 		return user.jsonify(), 201
 
-
 api.add_resource(User, "/user/<string:user_name>")
 
 api.add_resource(Login, "/login")
+api.add_resource(Signup, "/signup")
 
 search_args = reqparse.RequestParser()
 search_args.add_argument("name", type=str)
@@ -167,7 +168,7 @@ search_args.add_argument("created_by", type=str)
 search_args.add_argument("page", type=int)
 
 class SearchGame(Resource):
-	def get(self):
+	def post(self):
 		args = search_args.parse_args()
 		name = (args["name"].lower() if args["name"] else None)
 		tags = (args["tags"].lower().split(",") if args["tags"] else None)
