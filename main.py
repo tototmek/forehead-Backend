@@ -109,6 +109,11 @@ class UserModel(db.Model):
 
 	def __repr__(self):
 		return f"User(name = {self.name})"
+	
+	def jsonify(self):
+		return {
+			"name": self.name,
+		}
 
 user_fields = {
 	'name': fields.String,
@@ -135,7 +140,6 @@ class Login(Resource):
 		else:
 			return False
 	
-	@marshal_with(user_fields)
 	def post(self):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
@@ -147,7 +151,7 @@ class Login(Resource):
 			password=args["password"])
 		db.session.add(user)
 		db.session.commit()
-		return user, 201
+		return user.jsonify(), 201
 
 
 api.add_resource(User, "/user/<string:user_name>")

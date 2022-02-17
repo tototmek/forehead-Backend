@@ -17,7 +17,7 @@ BASE = "http://127.0.0.1:5000/"
 #     requests.put(BASE + "game/1", data[i])
 
 # REGISTER USER
-response = requests.post(BASE + "login", {"username":"karlosito231", "password":"karlos21_37"})
+response = requests.post(BASE + "login", {"username":"karlositos231", "password":"karlos21_37"})
 print(response.json())
 
 # LOGIN
