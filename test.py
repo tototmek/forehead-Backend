@@ -1,7 +1,7 @@
 import requests
 
 BASE="https://forehead-game-backend.herokuapp.com/"
-#BASE = "http://127.0.0.1:5000/"
+BASE = "http://127.0.0.1:5000/"
 
 # data = [{"likes": 78, "name":"Best ballads", "views": 123, "created_by": "YoMama", "tags": "music,rock", "cards": 'gg,g,ds,aasd,f'},
 #    {"likes": 73458, "name":"Only the best", "views": 55, "created_by": "tototmek", "tags": "music", "cards": 'gg,g,ds,aasd,f'},
@@ -17,7 +17,7 @@ BASE="https://forehead-game-backend.herokuapp.com/"
 #     requests.put(BASE + "game/1", data[i])
 
 # REGISTER USER
-response = requests.post(BASE + "login", {"username":"karlosito23", "password":"karlos21_37"})
+response = requests.post(BASE + "login", {"username":"karlosito231", "password":"karlos21_37"})
 print(response.json())
 
 # LOGIN
@@ -25,8 +25,8 @@ print(response.json())
 #print(response.json())
 
 # CHECK IF USER EXISTS
-response = requests.get(BASE + "user/hulia")
-print(response.json())
+#response = requests.get(BASE + "user/hulia")
+#print(response.json())
 
 # SEARCH
 # search_data = {"tags":"rock"}

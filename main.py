@@ -140,7 +140,7 @@ class Login(Resource):
 		args = login_args.parse_args()
 		result = UserModel.query.filter_by(name=args["username"]).first()
 		if result:
-			abort(200, message="Name already taken...")
+			return {"message":"Name already taken!"}, 409
 
 		user = UserModel(
             name=args["username"],
