@@ -175,7 +175,7 @@ class SearchGame(Resource):
 		created_by = args["created_by"]
 		page = (args["page"] if args["page"] else 10)
 		results = []
-		queries = sorted(GameModel.query.all(), key=lambda x: -x.views)
+		queries = sorted(GameModel.query.all(), key=lambda x: -x.likes)
 		iteration = 0
 		for result in queries:
 			game_tags = result.tags.split("|")
@@ -189,6 +189,8 @@ class SearchGame(Resource):
 		return {"results": results}
 
 api.add_resource(SearchGame, "/search")
+
+#db.create_all()
 
 if __name__ == "__main__":
 	app.run()
