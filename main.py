@@ -173,15 +173,19 @@ class SearchGame(Resource):
 		name = (args["name"].lower() if args["name"] else None)
 		tags = (args["tags"].lower().split(",") if args["tags"] else None)
 		created_by = args["created_by"]
-		page = args["page"]
+		page = (args["page"] if args["page"] else 10)
 		results = []
 		queries = sorted(GameModel.query.all(), key=lambda x: -x.views)
+		iteration = 0
 		for result in queries:
 			if name is None or any (word in name for word in result.name.lower().split(" ")) or any (word in result.name for word in name.split(" ")):
-				game_tags = result.tags.split(",")
+				game_tags = result.tags.split("|")
 				if tags is None or all (tag in game_tags for tag in tags):
 					if created_by is None or result.created_by == created_by:
+						iteration += 1
 						results.append(result.jsonify())
+						if iteration == page:
+							return results
 		return results
 
 api.add_resource(SearchGame, "/search")
