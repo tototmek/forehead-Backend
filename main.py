@@ -178,8 +178,8 @@ class SearchGame(Resource):
 		queries = sorted(GameModel.query.all(), key=lambda x: -x.views)
 		iteration = 0
 		for result in queries:
-			if name is None or any (word in result.name for word in name.split()) or any (word in result.tags for word in name.split()):
-				game_tags = result.tags.split("|")
+			game_tags = result.tags.split("|")
+			if name is None or any (word in result.name.lower() for word in name.split()) or any (word in game_tags for word in name.split()):
 				if tags is None or all (tag in game_tags for tag in tags):
 					if created_by is None or result.created_by == created_by:
 						iteration += 1
