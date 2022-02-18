@@ -186,7 +186,7 @@ class SearchGame(Resource):
 						results.append(result.jsonify())
 						if iteration == page:
 							return results
-		return results
+		return {"results": results}
 
 api.add_resource(SearchGame, "/search")
 
