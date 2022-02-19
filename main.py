@@ -1,3 +1,4 @@
+from email import message
 from re import L
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
@@ -241,7 +242,7 @@ class LikeGame(Resource):
 			game.likes += 1
 			user.add_saved_game(game_id)
 		db.session.commit()
-		return 200
+		return {"message": "ok"}
 
 api.add_resource(LikeGame, "/like")
 
@@ -257,7 +258,7 @@ class ViewGame(Resource):
 			abort(404, message="Game does not exist. Cannot view")
 		game.views += 1
 		db.session.commit()
-		return 200
+		return {"message": "ok"}
 
 api.add_resource(ViewGame, "/view")
 
