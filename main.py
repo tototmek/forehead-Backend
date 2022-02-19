@@ -171,7 +171,7 @@ class Signup(Resource):
 		user = UserModel(
             name=args["username"],
 			password=args["password"],
-			saved_games="")
+			saved_games="0")
 		db.session.add(user)
 		db.session.commit()
 		return user.jsonify(), 201
@@ -262,7 +262,7 @@ class ViewGame(Resource):
 
 api.add_resource(ViewGame, "/view")
 
-#db.create_all()
+db.create_all()
 
 if __name__ == "__main__":
 	app.run()
