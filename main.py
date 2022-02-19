@@ -1,3 +1,4 @@
+from re import L
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
@@ -106,6 +107,7 @@ api.add_resource(Game, "/game/<int:game_id>")
 class UserModel(db.Model):
 	name = db.Column(db.String(25), primary_key=True, nullable=False)
 	password = db.Column(db.String(100), nullable=False)
+	saved_games = db.Column(db.String())
 
 	def __repr__(self):
 		return f"User(name = {self.name})"
@@ -113,10 +115,26 @@ class UserModel(db.Model):
 	def jsonify(self):
 		return {
 			"name": self.name,
+			"saved_games": self.saved_games
 		}
+	
+	def add_saved_game(self, id):
+		games = self.saved_games.split(",")
+		if str(id) not in games:
+			games.append(str(id))
+		self.saved_games = ",".join(games)
+
+
+	def remove_saved_game(self, id):
+		games = self.saved_games.split(",")
+		if str(id) in games:
+			games.remove(str(id))
+		self.saved_games = ",".join(games)
+
 
 user_fields = {
 	'name': fields.String,
+	'saved_games': fields.String,
 }
 
 class User(Resource):
@@ -151,7 +169,8 @@ class Signup(Resource):
 
 		user = UserModel(
             name=args["username"],
-			password=args["password"])
+			password=args["password"],
+			saved_games="")
 		db.session.add(user)
 		db.session.commit()
 		return user.jsonify(), 201
@@ -166,6 +185,7 @@ search_args.add_argument("name", type=str)
 search_args.add_argument("tags", type=str)
 search_args.add_argument("created_by", type=str)
 search_args.add_argument("page", type=int)
+search_args.add_argument("username", type=str)
 
 class SearchGame(Resource):
 	def post(self):
@@ -174,6 +194,10 @@ class SearchGame(Resource):
 		tags = (args["tags"].lower().split(",") if args["tags"] else None)
 		created_by = args["created_by"]
 		page = (args["page"] if args["page"] else 10)
+		username = (args["username"] if args["username"] else None)
+		if username is not None:
+			user = UserModel.query.filter_by(name=username).first()
+			saved_games = map(int, (user.saved_games.split(",") if user is not None else []))
 		results = []
 		queries = sorted(GameModel.query.all(), key=lambda x: -x.likes)
 		iteration = 0
@@ -183,12 +207,59 @@ class SearchGame(Resource):
 				if tags is None or all (tag in game_tags for tag in tags):
 					if created_by is None or result.created_by == created_by:
 						iteration += 1
-						results.append(result.jsonify())
+						output = result.jsonify()
+						if username is None or result.id not in saved_games:
+							output["saved"] = "false" 
+						else:
+							output["saved"] = "true" 
+						results.append(output)
 						if iteration == page:
 							return {"results": results}
 		return {"results": results}
 
 api.add_resource(SearchGame, "/search")
+
+like_args = reqparse.RequestParser()
+like_args.add_argument("username", type=str, required=True)
+like_args.add_argument("game_id", type=int, required=True)
+like_args.add_argument("is_dislike", type=bool)
+
+class LikeGame(Resource):
+	def post(self):
+		args = like_args.parse_args()
+		username = args["username"]
+		game_id = args["game_id"]
+		is_dislike = args["is_dislike"]
+		user = UserModel.query.filter_by(name=username).first()
+		game = GameModel.query.filter_by(id=game_id).first()
+		if not user or not game:
+			abort(404, message="Player or Game does not exist. Cannot like")
+		if is_dislike:
+			game.likes -= 1
+			user.remove_saved_game(game_id)
+		else:
+			game.likes += 1
+			user.add_saved_game(game_id)
+		db.session.commit()
+		return 200
+
+api.add_resource(LikeGame, "/like")
+
+view_args = reqparse.RequestParser()
+view_args.add_argument("game_id", type=int, required=True)
+
+class ViewGame(Resource):
+	def post(self):
+		args = view_args.parse_args()
+		game_id = args["game_id"]
+		game = GameModel.query.filter_by(id=game_id).first()
+		if not game:
+			abort(404, message="Game does not exist. Cannot view")
+		game.views += 1
+		db.session.commit()
+		return 200
+
+api.add_resource(ViewGame, "/view")
 
 #db.create_all()
 
