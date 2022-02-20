@@ -262,7 +262,7 @@ class ViewGame(Resource):
 
 api.add_resource(ViewGame, "/view")
 
-db.create_all()
+#db.create_all()
 
 if __name__ == "__main__":
 	app.run()
