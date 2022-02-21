@@ -198,7 +198,7 @@ class SearchGame(Resource):
 		username = (args["username"] if args["username"] else None)
 		if username is not None:
 			user = UserModel.query.filter_by(name=username).first()
-			saved_games = map(int, (user.saved_games.split(",") if user is not None else []))
+			saved_games = list(map(int, (user.saved_games.split(",") if user is not None else [])))
 		results = []
 		queries = sorted(GameModel.query.all(), key=lambda x: -x.likes)
 		iteration = 0
