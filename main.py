@@ -39,14 +39,7 @@ game_post_args.add_argument("created_by", type=str, help="Creator of the game", 
 game_post_args.add_argument("cards", type=str, help="Cards are required", required=True)
 game_post_args.add_argument("views", type=int, help="Views of the game", required=True)
 game_post_args.add_argument("likes", type=int, help="Likes on the game", required=True)
-
-game_update_args = reqparse.RequestParser()
-game_update_args.add_argument("name", type=str, help="Name of the game is required")
-game_update_args.add_argument("tags", type=str, help="Tags are required")
-game_update_args.add_argument("created_by", type=str, help="Creator of the game")
-game_update_args.add_argument("cards", type=str, help="Cards are required")
-game_update_args.add_argument("views", type=int, help="Views of the game")
-game_update_args.add_argument("likes", type=int, help="Likes on the game")
+game_post_args.add_argument("id", type=int)
 
 game_fields = {
 	'id': fields.Integer,
@@ -69,39 +62,34 @@ class Game(Resource):
 	@marshal_with(game_fields)
 	def post(self, game_id):
 		args = game_post_args.parse_args()
-		game = GameModel(
-            name=args['name'],
-            tags=args['tags'],
-            created_by=args['created_by'],
-            cards=args['cards'],
-            views=args['views'],
-            likes=args['likes'])
-		db.session.add(game)
-		db.session.commit()
+		if (args["id"] is not None):
+			result = GameModel.query.filter_by(id=game_id).first()
+			if not result:
+				abort(404, message="Game doesn't exist, cannot update")
+			if args['name']:
+				result.name = args['name']
+			if args['tags']:
+				result.tags = args['tags']
+			if args['created_by']:
+				result.created_by = args['created_by']
+			if args['cards']:
+				result.cards = args['cards']
+			if args['views']:
+				result.views = args['views']
+			if args['likes']:
+				result.likes = args['likes']
+			db.session.commit()
+		else:
+			game = GameModel(
+            	name=args['name'],
+            	tags=args['tags'],
+            	created_by=args['created_by'],
+            	cards=args['cards'],
+            	views=args['views'],
+            	likes=args['likes'])
+			db.session.add(game)
+			db.session.commit()
 		return game, 201
-
-	@marshal_with(game_fields)
-	def patch(self, game_id):
-		args = game_update_args.parse_args()
-		result = GameModel.query.filter_by(id=game_id).first()
-		if not result:
-			abort(404, message="Game doesn't exist, cannot update")
-
-		if args['name']:
-			result.name = args['name']
-		if args['tags']:
-			result.tags = args['tags']
-		if args['created_by']:
-			result.created_by = args['created_by']
-		if args['cards']:
-			result.cards = args['cards']
-		if args['views']:
-			result.views = args['views']
-		if args['likes']:
-			result.likes = args['likes']
-		db.session.commit()
-
-		return result
 
 api.add_resource(Game, "/game/<int:game_id>")
 
