@@ -63,21 +63,21 @@ class Game(Resource):
 	def post(self, game_id):
 		args = game_post_args.parse_args()
 		if (args["id"] is not None):
-			result = GameModel.query.filter_by(id=game_id).first()
-			if not result:
+			game = GameModel.query.filter_by(id=args["id"]).first()
+			if not game:
 				abort(404, message="Game doesn't exist, cannot update")
 			if args['name']:
-				result.name = args['name']
+				game.name = args['name']
 			if args['tags']:
-				result.tags = args['tags']
+				game.tags = args['tags']
 			if args['created_by']:
-				result.created_by = args['created_by']
+				game.created_by = args['created_by']
 			if args['cards']:
-				result.cards = args['cards']
+				game.cards = args['cards']
 			if args['views']:
-				result.views = args['views']
+				game.views = args['views']
 			if args['likes']:
-				result.likes = args['likes']
+				game.likes = args['likes']
 			db.session.commit()
 		else:
 			game = GameModel(
