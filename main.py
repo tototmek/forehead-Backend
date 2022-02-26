@@ -1,12 +1,16 @@
-from email import message
-from re import L
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 
+import os
+#import psycopg2
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+#conn = psycopg2.connect(DATABASE_URL, ssl_mode='require')
+
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db = SQLAlchemy(app)
 
 class GameModel(db.Model):
