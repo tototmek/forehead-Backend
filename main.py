@@ -3,10 +3,8 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 
 import os
-#import psycopg2
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-#conn = psycopg2.connect(DATABASE_URL, ssl_mode='require')
 
 app = Flask(__name__)
 api = Api(app)
