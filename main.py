@@ -252,7 +252,18 @@ class ViewGame(Resource):
 
 api.add_resource(ViewGame, "/view")
 
+class DeleteGame(Resource):
+	def put(self, game_id):
+		result = GameModel.query.filter_by(id=game_id).first()
+		if not result:
+			abort(404, message="Could not find a game with that id")
+		result.delete()
+		db.session.commit()
+		return {"message": "ok"}
+
 #db.create_all()
+
+api.add_resource(DeleteGame, "/delete/<int:game_id>")
 
 if __name__ == "__main__":
 	app.run()
