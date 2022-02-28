@@ -253,7 +253,7 @@ class ViewGame(Resource):
 api.add_resource(ViewGame, "/view")
 
 class DeleteGame(Resource):
-	def put(self, game_id):
+	def post(self, game_id):
 		result = GameModel.query.filter_by(id=game_id).first()
 		if not result:
 			abort(404, message="Could not find a game with that id")
